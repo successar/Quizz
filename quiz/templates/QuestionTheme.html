@@ -1,0 +1,55 @@
+{% extends "indexTheme.html" %}
+{% load i18n %}
+{% load quiz_tags %}
+{% block title %} {% trans "Question" %} {% endblock %}
+
+{% block content %}
+
+<section id="title" class="emerald">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>{{ quiz.title }}</h1>
+                <p>{{ quiz.description }}</p>
+            </div>
+        </div>
+    </div>
+</section><!--/#title-->
+<section id="about-us" class="container">
+    {% if question %}
+
+    {% if progress %}
+    <div style="float: right;">
+        {% trans "Question" %} {{ progress.0|add:1 }} {% trans "of" %} {{ progress.1 }}
+    </div>
+    {% endif %}
+
+    <p>
+      <small class="muted">{% trans "Question category" %}:</small>
+      <strong>{{ question.category }}</strong>
+  </p>
+
+  <p class="lead">{{ question.content }}</p>
+
+  {% if question.figure %}
+  <img src="{{ question.figure.url }}" alt="{{ question.content }}" />
+  {% endif %}
+
+  <form action="" method="POST">{% csrf_token %}
+      <input type=hidden name="question_id" value="{{ question.id }}">
+
+      <ul class="list-group">
+
+        {% for answer in form.answers %}
+        <li class="list-group-item">
+            {{ answer }}
+        </li>
+        {% endfor %}
+
+    </ul>
+    <input type="submit" value={% trans "Check" %} class="btn btn-large btn-block btn-warning" >
+</form>
+
+{% endif %}
+</section><!--/#about-us-->
+{% endblock %}

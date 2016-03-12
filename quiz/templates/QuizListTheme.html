@@ -1,0 +1,62 @@
+{% extends "indexTheme.html" %}
+{% load i18n %}
+{% load quiz_tags %}
+{% block title %} {% trans "Progress" %} {% endblock %}
+
+{% block content %}
+
+<section id="title" class="emerald">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1>Quiz List for {{ category.category }} Category</h1>
+        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada</p>
+      </div>
+      <div class="col-sm-6">
+        <ul class="breadcrumb pull-right">
+          <li><a href="index.html">Home</a></li>
+          <li class="active">QuizList</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section><!--/#title-->   
+<section id="quizlist" class="container">
+  {% with object_list as quizzes %}
+  {% if quizzes %}
+
+  <div class="row">
+      <div class="panel-group" id="accordion1">
+        {% for quiz in quizzes %}
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <div class="row">
+                <div class="col-md-6"> {{ quiz.title }} </div>
+                <a class="accordion-toggle btn btn-primary col-md-2" data-toggle="collapse" data-parent="#accordion1" href="#{{ quiz.title.split|join:"_" }}">
+                  See Description
+                </a>            
+                <a href="{% url 'quiz_question' quiz_name=quiz.url %}" class="btn btn-info col-md-2">Start Quiz</a>
+              </div>
+            </h4>
+          </div>
+          <div id="{{ quiz.title.split|join:"_" }}" class="panel-collapse collapse">
+            <div class="panel-body">
+              <p> {{ quiz.description }} </p>
+              {% if quiz.single_attempt %}
+              <p>{% trans "You will only get one attempt at this quiz" %}.</p>
+              {% endif %}           
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div><!--/#accordion3-->
+  </div>
+{% else %}
+<p>{% trans "There are no quizzes" %}</p>
+{% endif %}
+{% endwith %}
+<!-- /Career -->
+</section>
+
+{% endblock %}

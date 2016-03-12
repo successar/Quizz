@@ -1,0 +1,72 @@
+{% extends "indexTheme.html" %}
+{% load i18n %}
+{% load quiz_tags %}
+{% block title %} {% trans "Quiz Details" %} {% endblock %}
+
+{% block content %}
+
+<section id="title" class="emerald">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Result for {{ sitting.quiz.title }}</h1>
+                <p>{{ sitting.quiz.description }}</p>
+                <p>Category : {{ sitting.quiz.category }}</p>
+            </div>
+        </div>
+    </div>
+</section><!--/#title-->
+<section id="about-us" class="container">
+    <p>{% trans "User" %}: {{ sitting.user }}</p>
+<p>{% trans "Completed" %}: {{ sitting.end|date }}</p>
+<p>{% trans "Score" %}: {{ sitting.get_percent_correct }}%</p>
+
+<table class="table table-bordered table-striped">
+
+  <thead>
+  <tr>
+    <th>{% trans "Question" %}</th>
+    <th>{% trans "User answer" %}</th>
+    <th>Is Correct</th>
+  </tr>
+  </thead>
+
+  <tbody>
+{% for question in questions %}
+
+  <tr>
+      <td>
+        {{ question.content }}
+        {% if question.figure %}
+        <div style="max-width: 100px;"><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
+        {% endif %}
+      </td>
+    <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
+    <td>
+    {% if question.id in sitting.get_incorrect_questions %}
+      <p>{% trans "incorrect" %}</p>
+    {% else %}
+      <p>{% trans "Correct" %}</p>
+    {% endif %}
+    </td>
+    {% if perms.quiz.can_score %}
+    <td>
+    <form action="" method="POST">{% csrf_token %}
+      <input type=hidden name="qid" value="{{ question.id }}">
+      <button type="submit" class="btn btn-warning">{% trans "Toggle whether correct" %}</button>
+    </form>
+  </td>
+    {% endif %}
+    
+  </tr>
+  <tr>
+    <td>{{ question.explanation }}</td>
+  </tr>
+
+{% endfor %}
+
+  </tbody>
+
+</table>
+</section><!--/#about-us-->
+{% endblock %}

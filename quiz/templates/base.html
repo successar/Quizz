@@ -1,0 +1,11 @@
+{% extends 'toplevel.html' %}
+{% block toplevel %}
+<div class="container">
+<a href = "{% url 'quiz_progress' %}">Go to Progress Page</a>
+<a href="{% url 'quiz_index' %}">Go to Quiz List</a>
+{% block content %}
+
+{% endblock %}
+</div>
+{% endblock %}
+

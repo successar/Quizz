@@ -1,0 +1,54 @@
+{% extends "indexTheme.html" %}
+{% load i18n %}
+{% load quiz_tags %}
+{% block title %} {% trans "Progress" %} {% endblock %}
+
+{% block content %}
+<section id="title" class="emerald">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Previous Exam Papers</h1>
+                <p>Below are the results of exams that you have sat.</p>
+            </div>
+            <div class="col-sm-6">
+                <ul class="breadcrumb pull-right">
+                    <li><a href="index.html">Home</a></li>
+                    <li class="active">Progress</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section><!--/#title-->
+
+<section id="progress" class="container">
+    <div class="row">
+        <div>
+            <div>
+                <table class="table">
+                    <tr>
+                        <th class="col-md-2">Quiz Title</th>
+                        <th class="col-md-2">Completed On</th>
+                        <th class="col-md-4">Score</th>
+                    </tr>
+                    {% if exams %}
+                    {% for exam in exams %}
+                    <tr>
+                        <td class="col-md-2"><a href="{% url 'quiz_marking_detail' pk=exam.id %}">{{ exam.quiz.title }}</a></td>
+                        <td class="col-md-2">{{ exam.end|date }}</td>
+                        <td class="col-md-4">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ exam.get_percent_correct }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ exam.get_percent_correct }}%;">
+                                    <span>{{ exam.get_percent_correct }}</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div><!--/.col-sm-6-->
+    </div><!--/.row-->        
+</section><!--/#progress-->
+{% endblock %}
