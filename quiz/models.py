@@ -75,20 +75,20 @@ class Quiz(models.Model):
     answers_at_end = models.BooleanField(blank=False, default=False, verbose_name=_("Answers at end"), 
         help_text=_("Correct answer is NOT shown after question. Answers displayed at the end."))
 
-    exam_paper = models.BooleanField(blank=False, default=False, verbose_name=_("Exam Paper"), 
+    exam_paper = models.BooleanField(blank=False, default=True, verbose_name=_("Exam Paper"), 
         help_text=_("If yes, the result of each attempt by a user will be stored. Necessary for marking."))
 
     single_attempt = models.BooleanField(blank=False, default=False, help_text=_("If yes, only one attempt by"
                     " a user will be permitted."
                     " Non users cannot sit this exam."), verbose_name=_("Single Attempt"))
 
-    pass_mark = models.SmallIntegerField(blank=True, default=0, verbose_name=_("Pass Mark"), 
+    pass_mark = models.SmallIntegerField(blank=True, default=40, verbose_name=_("Pass Mark"), 
         help_text=_("Percentage required to pass exam."), validators=[MaxValueValidator(100)])
 
-    success_text = models.TextField(blank=True, 
+    success_text = models.TextField(blank=True, default='You Have Passed !!',
         help_text=_("Displayed if user passes."), verbose_name=_("Success Text"))
 
-    fail_text = models.TextField(verbose_name=_("Fail Text"), blank=True, help_text=_("Displayed if user fails."))
+    fail_text = models.TextField(verbose_name=_("Fail Text"), default='You have failed', blank=True, help_text=_("Displayed if user fails."))
 
     draft = models.BooleanField(blank=True, default=False, verbose_name=_("Draft"), 
         help_text=_("If yes, the quiz is not displayed"
@@ -373,7 +373,7 @@ class Question(models.Model):
     Shared properties placed here.
     """
 
-    quiz = models.ManyToManyField(Quiz, verbose_name=_("Quiz"), blank=True)
+    quiz = models.ForeignKey(Quiz, verbose_name=_("Quiz"), blank=True, null=True)
 
     category = models.ForeignKey(Category, verbose_name=_("Category"), blank=True, null=True)
 
