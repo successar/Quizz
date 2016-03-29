@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>{% block title %}  {% endblock %} | Flat Theme</title>
+    <title>{% block title %}  {% endblock %} | Quizz</title>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet">
@@ -39,6 +39,7 @@
                     <li><a href={% url 'index' %}>Home</a></li>
                     <li><a href={% url 'quiz_progress' %}>Progress</a></li>
                     <li><a href={% url 'quiz_category_list_all' %}>QuizList</a></li>
+                    <li><a href="{% url 'logout' %}?next=/">SignOut</a></li>
                 </ul>
             </div>
         </div>

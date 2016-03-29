@@ -1,39 +1,123 @@
-{% extends "toplevel.html" %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block toplevel %}
+    <head>
 
-<div class="container">
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Quizz</title>
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
+        <!-- CSS -->
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/font-awesome/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/form-elements.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+        <!-- Favicon and touch icons -->
+        <link rel="shortcut icon" href="assets/ico/favicon.png">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static 'assets/ico/apple-touch-icon-144-precomposed.png' %}">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'assets/ico/apple-touch-icon-114-precomposed.png' %}">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'assets/ico/apple-touch-icon-72-precomposed.png' %}">
+        <link rel="apple-touch-icon-precomposed" href="{% static 'assets/ico/apple-touch-icon-57-precomposed.png' %}">
 
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
+    </head>
 
-{# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-</div>
-{% endblock %}
+    <body>
+
+        <!-- Top content -->
+        <div class="top-content">
+            
+            <div class="inner-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text">
+                            <h1><strong>Quizz</strong> Login Form</h1>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text">
+                            <div class="description">
+                                <p>
+                                    {% if form.errors %}
+                                    <p>Your username and password didn't match. Please try again.</p>
+                                    {% endif %}
+
+                                    {% if next %}
+                                        {% if user.is_authenticated %}
+                                        <p>Your account doesn't have access to this page. To proceed,
+                                        please login with an account that has access.</p>
+                                        {% else %}
+                                        <p>Please login to see this page.</p>
+                                        {% endif %}
+                                    {% endif %}                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 form-box">
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Login to our site</h3>
+                                    <p>Enter your username and password to log on:</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-lock"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <form role="form" action="{% url 'login' %}" method="post" class="login-form">{% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="sr-only" for="id_username">Username</label>
+                                        <input type="text" name="username" id="id_username" placeholder="Username..." class="form-username form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="id_password">Password</label>
+                                        <input type="password" name="password" id="id_password" placeholder="Password..." class="form-password form-control">
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Sign in!</button>
+                                    <a href="{% url 'password_reset' %}"><button class="btn btn-success">Lost password?</button></a>
+                                    <input type="hidden" name="next" value="{{ next }}" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 social-login">
+                            <h3>...or login with:</h3>
+                            <div class="social-login-buttons">
+                                <a class="btn btn-link-2" href="#">
+                                    <i class="fa fa-facebook"></i> Facebook
+                                </a>
+                                <a class="btn btn-link-2" href="#">
+                                    <i class="fa fa-twitter"></i> Twitter
+                                </a>
+                                <a class="btn btn-link-2" href="#">
+                                    <i class="fa fa-google-plus"></i> Google Plus
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+
+        <!-- Javascript -->
+        <script src="{% static 'assets/js/jquery-1.11.1.min.js' %}"></script>
+        <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.backstretch.min.js' %}"></script>
+        <script src="{% static 'assets/js/scripts.js' %}"></script>
+        
+        <!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+    </body>
+
+</html>
+
