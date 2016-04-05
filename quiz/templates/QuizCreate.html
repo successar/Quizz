@@ -1,0 +1,24 @@
+{% extends "indexTheme.html" %}
+{% load i18n %}
+{% load quiz_tags %}
+{% block title %} {% trans "Question" %} {% endblock %}
+
+{% block content %}
+
+<section id="title" class="emerald">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Create a New Quiz</h1>
+                <p>Create a New QUiz</p>
+            </div>
+        </div>
+    </div>
+</section><!--/#title-->
+<section id="about-us" class="container">
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save" />
+</form>
+</section><!--/#about-us-->
+{% endblock %}

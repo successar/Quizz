@@ -1,0 +1,81 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Quizz</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/font-awesome/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/form-elements.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+        <!-- Favicon and touch icons -->
+        <link rel="shortcut icon" href="assets/ico/favicon.png">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static 'assets/ico/apple-touch-icon-144-precomposed.png' %}">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'assets/ico/apple-touch-icon-114-precomposed.png' %}">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'assets/ico/apple-touch-icon-72-precomposed.png' %}">
+        <link rel="apple-touch-icon-precomposed" href="{% static 'assets/ico/apple-touch-icon-57-precomposed.png' %}">
+
+    </head>
+
+    <body>
+
+        <!-- Top content -->
+        <div class="top-content">
+            
+            <div class="inner-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text">
+                            <h1><strong>Quizz</strong> Signup Form</h1>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 form-box">
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Sign Up to our site</h3>
+                                    <p>Enter your username and password to sign up:</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-lock"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <form method="post" action=".">
+                                     {% csrf_token %}
+                                     {{ form.as_p }}
+
+                                    <button type="submit" class="btn btn-success">Register</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+
+        <!-- Javascript -->
+        <script src="{% static 'assets/js/jquery-1.11.1.min.js' %}"></script>
+        <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.backstretch.min.js' %}"></script>
+        <script src="{% static 'assets/js/scripts.js' %}"></script>
+        
+        <!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+    </body>
+
+</html>
+

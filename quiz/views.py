@@ -5,6 +5,8 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView, FormView
+from django.views.generic.edit import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import QuestionForm, EssayForm
 from .models import Quiz, Category, Progress, Sitting, Question
@@ -237,3 +239,9 @@ class QuizTake(FormView):
             self.sitting.delete()
 
         return render(self.request, 'ResultTheme.html', results)
+
+
+class QuizCreate(LoginRequiredMixin, CreateView):
+    model = Quiz
+    template_name = 'QuizCreate.html'
+    fields = ['title', 'description', 'category', 'pass_mark']

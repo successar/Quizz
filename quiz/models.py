@@ -62,25 +62,9 @@ class Quiz(models.Model):
 
     description = models.TextField(verbose_name=_("Description"), blank=True, help_text=_("a description of the quiz"))
 
-    url = models.SlugField(max_length=60, blank=False, help_text=_("a user friendly url"), verbose_name=_("user friendly url"))
+    url = models.SlugField(max_length=60, blank=True, help_text=_("a user friendly url"), verbose_name=_("user friendly url"))
 
     category = models.ForeignKey(Category, null=True, blank=True, verbose_name=_("Category"))
-
-    random_order = models.BooleanField(blank=False, default=False, verbose_name=_("Random Order"), 
-        help_text=_("Display the questions in a random order or as they are set?"))
-
-    max_questions = models.PositiveIntegerField(blank=True, null=True, verbose_name=_("Max Questions"), 
-        help_text=_("Number of questions to be answered on each attempt."))
-
-    answers_at_end = models.BooleanField(blank=False, default=False, verbose_name=_("Answers at end"), 
-        help_text=_("Correct answer is NOT shown after question. Answers displayed at the end."))
-
-    exam_paper = models.BooleanField(blank=False, default=True, verbose_name=_("Exam Paper"), 
-        help_text=_("If yes, the result of each attempt by a user will be stored. Necessary for marking."))
-
-    single_attempt = models.BooleanField(blank=False, default=False, help_text=_("If yes, only one attempt by"
-                    " a user will be permitted."
-                    " Non users cannot sit this exam."), verbose_name=_("Single Attempt"))
 
     pass_mark = models.SmallIntegerField(blank=True, default=40, verbose_name=_("Pass Mark"), 
         help_text=_("Percentage required to pass exam."), validators=[MaxValueValidator(100)])
@@ -97,13 +81,13 @@ class Quiz(models.Model):
                     " quizzes."))
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if self.url == '' :
+            self.url = self.title
+
         self.url = re.sub('\s+', '-', self.url).lower()
 
         self.url = ''.join(letter for letter in self.url if
                            letter.isalnum() or letter == '-')
-
-        if self.single_attempt is True:
-            self.exam_paper = True
 
         if self.pass_mark > 100:
             raise ValidationError('%s is above 100' % self.pass_mark)
@@ -158,19 +142,13 @@ class Progress(models.Model):
 class SittingManager(models.Manager):
 
     def new_sitting(self, user, quiz):
-        if quiz.random_order is True:
-            question_set = quiz.question_set.all()
-        else:
-            question_set = quiz.question_set.all()
+        question_set = quiz.question_set.all()
 
         question_set = question_set.values_list('id', flat=True)
 
         if len(question_set) == 0:
             raise ImproperlyConfigured('Question set of the quiz is empty. '
                                        'Please configure questions properly')
-
-        if quiz.max_questions and quiz.max_questions < len(question_set):
-            question_set = question_set[:quiz.max_questions]
 
         questions = ",".join(map(str, question_set)) + ","
 
