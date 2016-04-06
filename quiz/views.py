@@ -205,15 +205,7 @@ class QuizTake(FormView):
         else:
             self.sitting.add_incorrect_question(self.question)
 
-        if self.quiz.answers_at_end is not True:
-            self.previous = {'previous_answer': guess,
-                             'previous_outcome': is_correct,
-                             'previous_question': self.question,
-                             'answers': self.question.get_answers(),
-                             'question_type': {self.question
-                                               .__class__.__name__: True}}
-        else:
-            self.previous = {}
+        self.previous = {}
 
         self.sitting.add_user_answer(self.question, guess)
         self.sitting.remove_first_question()
@@ -234,9 +226,6 @@ class QuizTake(FormView):
               self.sitting.get_questions(with_answers=True)
         results['incorrect_questions'] =\
               self.sitting.get_incorrect_questions
-
-        if self.quiz.exam_paper is False:
-            self.sitting.delete()
 
         return render(self.request, 'ResultTheme.html', results)
 

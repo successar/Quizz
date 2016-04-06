@@ -156,10 +156,6 @@ class SittingManager(models.Manager):
         return new_sitting
 
     def user_sitting(self, user, quiz):
-        if quiz.single_attempt is True and self.filter(user=user, quiz=quiz, complete=True)\
-                                               .exists():
-            return False
-
         try:
             sitting = self.get(user=user, quiz=quiz, complete=False)
         except Sitting.DoesNotExist:
