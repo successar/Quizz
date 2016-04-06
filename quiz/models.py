@@ -39,23 +39,6 @@ class Category(models.Model):
 
 
 @python_2_unicode_compatible
-class SubCategory(models.Model):
-
-    sub_category = models.CharField(verbose_name=_("Sub-Category"), max_length=250, blank=True, null=True)
-
-    category = models.ForeignKey(Category, null=True, blank=True, verbose_name=_("Category"))
-
-    objects = CategoryManager()
-
-    class Meta:
-        verbose_name = _("Sub-Category")
-        verbose_name_plural = _("Sub-Categories")
-
-    def __str__(self):
-        return self.sub_category + " (" + self.category.category + ")"
-
-
-@python_2_unicode_compatible
 class Quiz(models.Model):
 
     title = models.CharField(verbose_name=_("Title"), max_length=60, blank=False)
@@ -73,12 +56,6 @@ class Quiz(models.Model):
         help_text=_("Displayed if user passes."), verbose_name=_("Success Text"))
 
     fail_text = models.TextField(verbose_name=_("Fail Text"), default='You have failed', blank=True, help_text=_("Displayed if user fails."))
-
-    draft = models.BooleanField(blank=True, default=False, verbose_name=_("Draft"), 
-        help_text=_("If yes, the quiz is not displayed"
-                    " in the quiz list and can only be"
-                    " taken by users who can edit"
-                    " quizzes."))
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         if self.url == '' :
@@ -168,7 +145,6 @@ class SittingManager(models.Manager):
 class Sitting(models.Model):
     """
     Used to store the progress of logged in users sitting a quiz.
-    Replaces the session system used by anon users.
 
     Question_order is a list of integer pks of all the questions in the
     quiz, in order.
@@ -177,8 +153,6 @@ class Sitting(models.Model):
     the unanswered questions in csv format.
 
     Incorrect_questions is a list in the same format.
-
-    Sitting deleted when quiz finished unless quiz.exam_paper is true.
 
     User_answers is a json object in which the question PK is stored
     with the answer the user gave.
@@ -350,8 +324,6 @@ class Question(models.Model):
     quiz = models.ForeignKey(Quiz, verbose_name=_("Quiz"), blank=True, null=True)
 
     category = models.ForeignKey(Category, verbose_name=_("Category"), blank=True, null=True)
-
-    sub_category = models.ForeignKey(SubCategory, verbose_name=_("Sub-Category"), blank=True, null=True)
 
     figure = models.ImageField(upload_to='uploads/%Y/%m/%d', blank=True, null=True, verbose_name=_("Figure"))
 

@@ -1,16 +1,12 @@
 from django.conf.urls import url
 from django.views.generic import TemplateView
-from .views import QuizListView, CategoriesListView,\
-    ViewQuizListByCategory, QuizUserProgressView, QuizMarkingList,\
-    QuizMarkingDetail, QuizDetailView, QuizTake, QuizCreate
+from .views import CategoriesListView,\
+    ViewQuizListByCategory, QuizUserProgressView,\
+    QuizMarkingDetail, QuizTake, QuizCreate
 
 urlpatterns = [        url(regex=r'^index$', 
                            view=TemplateView.as_view(template_name='IndexTheme.html'),
                            name='index'),
-
-                       url(regex=r'^quiz/$',
-                           view=QuizListView.as_view(),
-                           name='quiz_index'),
 
                        url(regex=r'^category/$',
                            view=CategoriesListView.as_view(),
@@ -24,10 +20,6 @@ urlpatterns = [        url(regex=r'^index$',
                            view=QuizUserProgressView.as_view(),
                            name='quiz_progress'),
 
-                       url(regex=r'^marking/$',
-                           view=QuizMarkingList.as_view(),
-                           name='quiz_marking'),
-
                        url(regex=r'^marking/(?P<pk>[\d.]+)/$',
                            view=QuizMarkingDetail.as_view(),
                            name='quiz_marking_detail'),
@@ -37,10 +29,6 @@ urlpatterns = [        url(regex=r'^index$',
                            name='quiz_create'),
 
                        #  passes variable 'quiz_name' to quiz_take view
-                       url(regex=r'^(?P<slug>[\w-]+)/$',
-                           view=QuizDetailView.as_view(),
-                           name='quiz_start_page'),
-
                        url(regex=r'^(?P<quiz_name>[\w-]+)/take/$',
                            view=QuizTake.as_view(),
                            name='quiz_question'),

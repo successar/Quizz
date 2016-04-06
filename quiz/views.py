@@ -11,45 +11,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import QuestionForm, EssayForm
 from .models import Quiz, Category, Progress, Sitting, Question
 from essay.models import Essay_Question
-from .track import TraceCalls
-
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(QuizMarkerMixin, self).dispatch(*args, **kwargs)
-
-
-class SittingFilterTitleMixin(object):
-    def get_queryset(self):
-        queryset = super(SittingFilterTitleMixin, self).get_queryset()
-        quiz_filter = self.request.GET.get('quiz_filter')
-        if quiz_filter:
-            queryset = queryset.filter(quiz__title__icontains=quiz_filter)
-
-        return queryset
-
-
-class QuizListView(ListView):
-    model = Quiz
-
-    def get_queryset(self):
-        queryset = super(QuizListView, self).get_queryset()
-        return queryset.filter(draft=False)
-
-
-class QuizDetailView(DetailView):
-    model = Quiz
-    slug_field = 'url'
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-
-        if self.object.draft and not request.user.has_perm('quiz.change_quiz'):
-            raise PermissionDenied
-
-        context = self.get_context_data(object=self.object)
-        return self.render_to_response(context)
 
 
 class CategoriesListView(ListView):
@@ -76,7 +42,7 @@ class ViewQuizListByCategory(ListView):
 
     def get_queryset(self):
         queryset = super(ViewQuizListByCategory, self).get_queryset()
-        return queryset.filter(category=self.category, draft=False)
+        return queryset.filter(category=self.category)
 
 
 class QuizUserProgressView(TemplateView):
@@ -94,23 +60,9 @@ class QuizUserProgressView(TemplateView):
         return context
 
 
-class QuizMarkingList(QuizMarkerMixin, SittingFilterTitleMixin, ListView):
-    model = Sitting
-
-    def get_queryset(self):
-        queryset = super(QuizMarkingList, self).get_queryset()\
-                                               .filter(complete=True)
-
-        user_filter = self.request.GET.get('user_filter')
-        if user_filter:
-            queryset = queryset.filter(user__username__icontains=user_filter)
-
-        return queryset
-
-
 class QuizMarkingDetail(QuizMarkerMixin, DetailView):
     model = Sitting
-    template_name='quiz/SittingTheme.html'
+    template_name='SittingTheme.html'
 
     def post(self, request, *args, **kwargs):
         sitting = self.get_object()
@@ -139,8 +91,6 @@ class QuizTake(FormView):
     
     def dispatch(self, request, *args, **kwargs):
         self.quiz = get_object_or_404(Quiz, url=self.kwargs['quiz_name'])
-        if self.quiz.draft and not request.user.has_perm('quiz.change_quiz'):
-            raise PermissionDenied
 
         self.logged_in_user = self.request.user.is_authenticated()
 
@@ -149,9 +99,6 @@ class QuizTake(FormView):
                                                         self.quiz)
         else:
             raise PermissionDenied
-
-        if self.sitting is False:
-            return render(request, 'single_complete.html')
 
         return super(QuizTake, self).dispatch(request, *args, **kwargs)
         

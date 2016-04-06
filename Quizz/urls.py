@@ -23,7 +23,6 @@ from django.contrib.auth.forms import UserCreationForm
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^quizz/', include('quiz.urls')),
-    url(r'^plate/', include('django_spaghetti.urls')),
     url(r'^$', auth_views.login, name='login_url'),
     url(r'^', include('django.contrib.auth.urls')),
     url('^register/', CreateView.as_view(
