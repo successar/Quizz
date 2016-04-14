@@ -9,7 +9,10 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import QuestionForm
-from .models import Quiz, Category, Progress, Sitting, Question
+from .models import Quiz, Category, Progress, Sitting, Question, Answer
+
+from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseRedirect
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -182,8 +185,35 @@ class QuizTake(FormView):
 
         return render(self.request, 'ResultTheme.html', results)
 
-
 class QuizCreate(LoginRequiredMixin, CreateView):
     model = Quiz
     template_name = 'QuizCreate.html'
     fields = ['title', 'description', 'category', 'pass_mark']
+    success_url = reverse_lazy('question_create')
+
+    def form_valid(self, form):
+        # self.quiz = form.cleaned_data['title']
+        self.object = form.save()
+        self.request.session['quiz'] = self.object.id
+        return HttpResponseRedirect(self.get_success_url())
+        
+class QuestionCreate(LoginRequiredMixin, CreateView):
+    model = Question
+    template_name = 'QuestionCreate.html'
+    fields = ['category', 'figure', 'content', 'explanation']
+    success_url = reverse_lazy('answer_create')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.request.session['question'] = self.object.id
+        return HttpResponseRedirect(self.get_success_url())
+
+class AnswerCreate(LoginRequiredMixin, CreateView):
+    model = Answer
+    template_name = 'AnswerCreate.html'
+    fields = ['content', 'correct']
+    success_url = reverse_lazy('answer_create')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
