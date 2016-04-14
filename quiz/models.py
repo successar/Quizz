@@ -79,7 +79,7 @@ class Quiz(models.Model):
         return self.title
 
     def get_questions(self):
-        return self.question_set.all().select_subclasses()
+        return self.question_set.all()
 
     @property
     def get_max_score(self):
@@ -195,7 +195,7 @@ class Sitting(models.Model):
 
         first, _ = self.question_list.split(',', 1)
         question_id = int(first)
-        return Question.objects.get_subclass(id=question_id)
+        return Question.objects.get(id=question_id)
 
     def remove_first_question(self):
         if not self.question_list:
@@ -285,7 +285,7 @@ class Sitting(models.Model):
     def get_questions(self, with_answers=False):
         question_ids = self._question_ids()
         questions = sorted(self.quiz.question_set.filter(id__in=question_ids)
-                                  .select_subclasses(), key=lambda q: question_ids.index(q.id))
+                                  , key=lambda q: question_ids.index(q.id))
 
         if with_answers:
             user_answers = json.loads(self.user_answers)
@@ -331,12 +331,50 @@ class Question(models.Model):
 
     explanation = models.TextField(max_length=2000, blank=True, help_text=_("Explanation to be shown after the question has been answered."), verbose_name=_('Explanation'))
 
-    objects = InheritanceManager()
+    def check_if_correct(self, guess):
+        answer = Answer.objects.get(id=guess)
+
+        if answer.correct is True:
+            return True
+        else:
+            return False
+
+    def get_answers(self):
+        return Answer.objects.filter(question=self)
+
+    def get_answers_list(self):
+        return [(answer.id, answer.content) for answer in
+                Answer.objects.filter(question=self)]
+
+    def answer_choice_to_string(self, guess):
+        return Answer.objects.get(id=guess).content
 
     class Meta:
-        verbose_name = _("Question")
-        verbose_name_plural = _("Questions")
-        ordering = ['category']
+        verbose_name = _("Multiple Choice Question")
+        verbose_name_plural = _("Multiple Choice Questions")
+        ordering = ['category']     
 
     def __str__(self):
         return self.content
+
+@python_2_unicode_compatible
+class Answer(models.Model):
+    question = models.ForeignKey(Question, verbose_name=_("Question"))
+
+    content = models.CharField(max_length=1000,
+                               blank=False,
+                               help_text=_("Enter the answer text that "
+                                           "you want displayed"),
+                               verbose_name=_("Content"))
+
+    correct = models.BooleanField(blank=False,
+                                  default=False,
+                                  help_text=_("Is this a correct answer?"),
+                                  verbose_name=_("Correct"))
+
+    def __str__(self):
+        return self.content
+
+    class Meta:
+        verbose_name = _("Answer")
+        verbose_name_plural = _("Answers")

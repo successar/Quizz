@@ -8,9 +8,8 @@ from django.views.generic import DetailView, ListView, TemplateView, FormView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .forms import QuestionForm, EssayForm
+from .forms import QuestionForm
 from .models import Quiz, Category, Progress, Sitting, Question
-from essay.models import Essay_Question
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -69,7 +68,7 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
 
         q_to_toggle = request.POST.get('qid', None)
         if q_to_toggle:
-            q = Question.objects.get_subclass(id=int(q_to_toggle))
+            q = Question.objects.get(id=int(q_to_toggle))
             if int(q_to_toggle) in sitting.get_incorrect_questions:
                 sitting.remove_incorrect_question(q)
             else:
@@ -112,10 +111,7 @@ class QuizTake(FormView):
         else:
             raise PermissionDenied
 
-        if self.question.__class__ is Essay_Question:
-            form_class = EssayForm
-
-        return form_class(**self.get_form_kwargs()) ### takes self.question and instantiate a QuestionForm/EssayForm ###
+        return form_class(**self.get_form_kwargs()) ### takes self.question and instantiate a QuestionForm ###
     
     ### Return keyword arguments to instantiate the form ###
     def get_form_kwargs(self):

@@ -3,10 +3,7 @@ from django.contrib import admin
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Quiz, Category, Progress, Question
-from multichoice.models import MCQuestion, Answer
-from true_false.models import TF_Question
-from essay.models import Essay_Question
+from .models import Quiz, Category, Progress, Question, Answer
 
 
 class AnswerInline(admin.TabularInline):
@@ -23,7 +20,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('category', )
 
 
-class MCQuestionAdmin(admin.ModelAdmin):
+class QuestionAdmin(admin.ModelAdmin):
     list_display = ('content', 'category', )
     list_filter = ('category',)
     fields = ('content', 'category',
@@ -42,24 +39,7 @@ class ProgressAdmin(admin.ModelAdmin):
     search_fields = ('user', )
 
 
-class TFQuestionAdmin(admin.ModelAdmin):
-    list_display = ('content', 'category', )
-    list_filter = ('category',)
-    fields = ('content', 'category', 
-              'figure', 'quiz', 'explanation', 'correct',)
-
-    search_fields = ('content', 'explanation')
-
-
-class EssayQuestionAdmin(admin.ModelAdmin):
-    list_display = ('content', 'category', )
-    list_filter = ('category',)
-    fields = ('content', 'category', 'quiz', 'explanation', )
-    search_fields = ('content', 'explanation')
-
 admin.site.register(Quiz, QuizAdmin)
 admin.site.register(Category, CategoryAdmin)
-admin.site.register(MCQuestion, MCQuestionAdmin)
+admin.site.register(Question, QuestionAdmin)
 admin.site.register(Progress, ProgressAdmin)
-admin.site.register(TF_Question, TFQuestionAdmin)
-admin.site.register(Essay_Question, EssayQuestionAdmin)

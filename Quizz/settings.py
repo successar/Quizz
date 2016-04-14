@@ -27,7 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 SPAGHETTI_SAUCE = {
-  'apps':['quiz', 'multichoice', 'essay', 'true_false'],
+  'apps':['quiz'],
   'show_fields':False,
   'exclude':{'auth':['user']}
 }
@@ -44,9 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'quiz',
-    'multichoice',
-    'essay',
-    'true_false',
 ]
 
 MIDDLEWARE_CLASSES = [
