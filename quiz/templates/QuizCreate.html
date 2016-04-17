@@ -17,8 +17,13 @@
 </section><!--/#title-->
 <section id="about-us" class="container">
 <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save" />
+    {% for field in form %}
+    <div class="form-group">
+     {{ field.label_tag }}
+     {{ field|addcss:"form-control" }}
+    </div>
+    {% endfor %}
+    <input type="submit" value="Add Questions" class="btn btn-primary" />
 </form>
 </section><!--/#about-us-->
 {% endblock %}

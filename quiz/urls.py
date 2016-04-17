@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.views.generic import TemplateView
 from .views import CategoriesListView,\
     ViewQuizListByCategory, QuizUserProgressView,\
-    QuizMarkingDetail, QuizTake, QuizCreate
+    QuizMarkingDetail, QuizTake, QuizCreate, QuestionCreate
 
 urlpatterns = [        url(regex=r'^index$', 
                            view=TemplateView.as_view(template_name='IndexTheme.html'),
@@ -27,6 +27,10 @@ urlpatterns = [        url(regex=r'^index$',
                        url(regex=r'^new/$', 
                            view=QuizCreate.as_view(),
                            name='quiz_create'),
+
+                       url(regex=r'^question/new/$', 
+                           view=QuestionCreate.as_view(),
+                           name='question_create'),
 
                        #  passes variable 'quiz_name' to quiz_take view
                        url(regex=r'^(?P<quiz_name>[\w-]+)/take/$',
