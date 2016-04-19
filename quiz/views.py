@@ -233,8 +233,8 @@ class QuestionCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form, answer_form):
         """
-        Called if all forms are valid. Creates a Recipe instance along with
-        associated Ingredients and Instructions and then redirects to a
+        Called if all forms are valid. Creates a Question instance along with
+        associated Answers and then redirects to a
         success page.
         """
         self.object = form.save(commit=False)
