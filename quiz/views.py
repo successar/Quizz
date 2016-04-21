@@ -8,11 +8,18 @@ from django.views.generic import DetailView, ListView, TemplateView, FormView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+<<<<<<< HEAD
 from .forms import QuestionForm
 from .models import Quiz, Category, Progress, Sitting, Question, Answer
 
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
+=======
+from .forms import QuestionForm, AnswerFormSet
+from .models import Quiz, Category, Progress, Sitting, Question
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse_lazy
+>>>>>>> upstream/master
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -192,15 +199,24 @@ class QuizCreate(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('question_create')
 
     def form_valid(self, form):
+<<<<<<< HEAD
         # self.quiz = form.cleaned_data['title']
         self.object = form.save()
         self.request.session['quiz'] = self.object.id
         return HttpResponseRedirect(self.get_success_url())
         
+=======
+        self.object = form.save()
+        self.request.session['quiz'] = self.object.id
+        return HttpResponseRedirect(self.get_success_url())
+
+
+>>>>>>> upstream/master
 class QuestionCreate(LoginRequiredMixin, CreateView):
     model = Question
     template_name = 'QuestionCreate.html'
     fields = ['category', 'figure', 'content', 'explanation']
+<<<<<<< HEAD
     success_url = reverse_lazy('answer_create')
 
     def form_valid(self, form):
@@ -217,3 +233,58 @@ class AnswerCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
+=======
+    success_url = reverse_lazy('question_create')
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests and instantiates blank versions of the form
+        and its inline formsets.
+        """
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        answer_form = AnswerFormSet()
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  answer_form=answer_form))
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance and its inline
+        formsets with the passed POST variables and then checking them for
+        validity.
+        """
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        answer_form = AnswerFormSet(self.request.POST)
+        if (form.is_valid() and answer_form.is_valid()):
+            return self.form_valid(form, answer_form)
+        else:
+            return self.form_invalid(form, answer_form)
+
+    def form_valid(self, form, answer_form):
+        """
+        Called if all forms are valid. Creates a Question instance along with
+        associated Answers and then redirects to a
+        success page.
+        """
+        self.object = form.save(commit=False)
+        if 'quiz' in self.request.session :
+            self.object.quiz_id = int(self.request.session['quiz'])
+        print(self.object)
+        self.object.save()
+        answer_form.instance = self.object
+        answer_form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form, ingredient_form, instruction_form):
+        """
+        Called if a form is invalid. Re-renders the context data with the
+        data-filled forms and errors.
+        """
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  answer_form=answer_form))
+>>>>>>> upstream/master

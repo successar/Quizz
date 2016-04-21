@@ -4,23 +4,86 @@
 {% block title %} {% trans "Question" %} {% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
+=======
+<script type="text/javascript">
+    $(function() {
+        $('.answer_form_class').formset({
+            addText: 'Add Answer',
+            deleteText: 'Remove',
+            prefix: '{{ answer_form.prefix }}',
+            addCssClass: 'btn btn-success',
+            deleteCssClass: 'btn btn-danger'
+        })
+    })()
+</script>
+>>>>>>> upstream/master
 
 <section id="title" class="emerald">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
                 <h1>Create a New Quiz</h1>
+<<<<<<< HEAD
                 <p>Create a New Quiz</p>
+=======
+                <p>Create a New QUiz</p>
+>>>>>>> upstream/master
             </div>
         </div>
     </div>
 </section><!--/#title-->
 <section id="about-us" class="container">
 <form action="" method="post">{% csrf_token %}
+<<<<<<< HEAD
     <input type="hidden" name="quiz" value="{{request.session.quiz}}">
     {{ form.as_p }}
     <input type="submit" value="Save" />
     <a href="{% url 'quiz_create' %}"> Create Next Quiz </a>
 </form>
 </section><!--/#about-us-->
+=======
+    <div class="form-group">
+        {{ form.category.label_tag}}
+        {{ form.category|addcss:"form-control" }}
+    </div>
+    <div class="form-group">
+        {{ form.figure.label_tag}}
+        {{ form.figure }}
+    </div>
+        <div class="form-group">
+        {{ form.content.label_tag}}
+        {{ form.content|addcss:"form-control" }}
+    </div>
+        <div class="form-group">
+        {{ form.explanation.label_tag}}
+        {{ form.explanation|addcss:"form-control" }}
+    </div>
+    <fieldset>
+        <legend>Answer List</legend>
+        <table id="id_answer_set_table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Content</th>
+                        <th scope="col">Correct</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in answer_form %}
+                    <tr class="answer_form_class">
+                        <td>{{ form.content|addcss:"form-control" }}</td>
+                        <td><div class="checkbox">{{ form.correct }}</div></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {{ answer_form.management_form }}
+        {{ answer_form.non_form_errors }}
+    </fieldset>
+    <input type="submit" value="Add Question" class="btn btn-primary" />
+</form>
+</section><!--/#about-us-->
+
+>>>>>>> upstream/master
 {% endblock %}

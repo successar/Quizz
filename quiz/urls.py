@@ -28,6 +28,10 @@ urlpatterns = [        url(regex=r'^index$',
                            view=QuizCreate.as_view(),
                            name='quiz_create'),
 
+                       url(regex=r'^question/new/$', 
+                           view=QuestionCreate.as_view(),
+                           name='question_create'),
+
                        #  passes variable 'quiz_name' to quiz_take view
                        url(regex=r'^(?P<quiz_name>[\w-]+)/take/$',
                            view=QuizTake.as_view(),
