@@ -8,18 +8,10 @@ from django.views.generic import DetailView, ListView, TemplateView, FormView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-<<<<<<< HEAD
-from .forms import QuestionForm
-from .models import Quiz, Category, Progress, Sitting, Question, Answer
-
-from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect
-=======
 from .forms import QuestionForm, AnswerFormSet
 from .models import Quiz, Category, Progress, Sitting, Question
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
->>>>>>> upstream/master
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -192,6 +184,7 @@ class QuizTake(FormView):
 
         return render(self.request, 'ResultTheme.html', results)
 
+
 class QuizCreate(LoginRequiredMixin, CreateView):
     model = Quiz
     template_name = 'QuizCreate.html'
@@ -199,41 +192,18 @@ class QuizCreate(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('question_create')
 
     def form_valid(self, form):
-<<<<<<< HEAD
-        # self.quiz = form.cleaned_data['title']
         self.object = form.save()
-        self.request.session['quiz'] = self.object.id
-        return HttpResponseRedirect(self.get_success_url())
-        
-=======
-        self.object = form.save()
-        self.request.session['quiz'] = self.object.id
+        self.request.session['quizid'] = self.object.id
+        self.request.session['quizname'] = self.object.title
+        self.request.session['quizcategoryid'] = self.object.category.id
+        self.request.session['quizcategory'] = self.object.category.category
         return HttpResponseRedirect(self.get_success_url())
 
 
->>>>>>> upstream/master
 class QuestionCreate(LoginRequiredMixin, CreateView):
     model = Question
     template_name = 'QuestionCreate.html'
-    fields = ['category', 'figure', 'content', 'explanation']
-<<<<<<< HEAD
-    success_url = reverse_lazy('answer_create')
-
-    def form_valid(self, form):
-        self.object = form.save()
-        self.request.session['question'] = self.object.id
-        return HttpResponseRedirect(self.get_success_url())
-
-class AnswerCreate(LoginRequiredMixin, CreateView):
-    model = Answer
-    template_name = 'AnswerCreate.html'
-    fields = ['content', 'correct']
-    success_url = reverse_lazy('answer_create')
-
-    def form_valid(self, form):
-        self.object = form.save()
-        return HttpResponseRedirect(self.get_success_url())
-=======
+    fields = ['figure', 'content', 'explanation']
     success_url = reverse_lazy('question_create')
 
     def get(self, request, *args, **kwargs):
@@ -287,4 +257,3 @@ class AnswerCreate(LoginRequiredMixin, CreateView):
         return self.render_to_response(
             self.get_context_data(form=form,
                                   answer_form=answer_form))
->>>>>>> upstream/master

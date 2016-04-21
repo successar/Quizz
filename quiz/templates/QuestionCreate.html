@@ -4,8 +4,6 @@
 {% block title %} {% trans "Question" %} {% endblock %}
 
 {% block content %}
-<<<<<<< HEAD
-=======
 <script type="text/javascript">
     $(function() {
         $('.answer_form_class').formset({
@@ -17,36 +15,20 @@
         })
     })()
 </script>
->>>>>>> upstream/master
 
 <section id="title" class="emerald">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
                 <h1>Create a New Quiz</h1>
-<<<<<<< HEAD
-                <p>Create a New Quiz</p>
-=======
-                <p>Create a New QUiz</p>
->>>>>>> upstream/master
+                <p>Create a New Quiz: {{ request.session.quizname }}</p>
+                <p>Quiz Category: {{ request.session.quizcategory }}</p>
             </div>
         </div>
     </div>
 </section><!--/#title-->
 <section id="about-us" class="container">
 <form action="" method="post">{% csrf_token %}
-<<<<<<< HEAD
-    <input type="hidden" name="quiz" value="{{request.session.quiz}}">
-    {{ form.as_p }}
-    <input type="submit" value="Save" />
-    <a href="{% url 'quiz_create' %}"> Create Next Quiz </a>
-</form>
-</section><!--/#about-us-->
-=======
-    <div class="form-group">
-        {{ form.category.label_tag}}
-        {{ form.category|addcss:"form-control" }}
-    </div>
     <div class="form-group">
         {{ form.figure.label_tag}}
         {{ form.figure }}
@@ -85,5 +67,4 @@
 </form>
 </section><!--/#about-us-->
 
->>>>>>> upstream/master
 {% endblock %}
