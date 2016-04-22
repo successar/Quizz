@@ -25,9 +25,10 @@ urlpatterns = [
     url(r'^quizz/', include('quiz.urls')),
     url(r'^$', auth_views.login, name='login_url'),
     url(r'^', include('django.contrib.auth.urls')),
-    url('^register/', CreateView.as_view(
+    url(r'^register/', CreateView.as_view(
             template_name='registration/register.html',
             form_class=UserCreationForm,
             success_url='/'
     ), name='register'),
+    url(r'^friends/', include('friendship.urls'))
 ]
