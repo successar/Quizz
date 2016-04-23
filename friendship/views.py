@@ -95,7 +95,7 @@ def friendship_cancel(request, friendship_request_id):
 def friendship_request_list(request, template_name='friendship/friend/requests_list.html'):
     """ View unread and read friendship requests """
     # friendship_requests = Friend.objects.requests(request.user)
-    friendship_requests = FriendshipRequest.objects.filter(rejected__isnull=True)
+    friendship_requests = FriendshipRequest.objects.filter(rejected__isnull=True, to_user=request.user)
 
     return render(request, template_name, {'requests': friendship_requests})
 

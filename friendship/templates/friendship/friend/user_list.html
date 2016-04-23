@@ -1,14 +1,32 @@
 {% extends 'indexTheme.html' %}
 {% block content %} 
 {% load friendshiptags %}
-<h1>Your Friends</h1> 
-<form id="searchform" action="{% url 'friendship_view_friends' %}" method="get" accept-charset="utf-8">
-	<button class="searchbutton" type="submit">
-		<i class="fa fa-search"></i>
-	</button>
-	<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
-</form>
-{% for user in object_list %}
-{{user.from_user.username}}
-{% endfor %}
+
+<section id="title" class="emerald">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+				<h1>Your Friends</h1>
+				<p>Pellentesque habitant morbi tristique senectus et netus et malesuada</p>
+			</div>
+		</div>
+	</div>
+</section>
+<section id="quizlist">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<form id="searchform" action="{% url 'friendship_view_friends' %}" method="get" accept-charset="utf-8" class="form-inline">
+					<div class="form-group">
+						<input class="searchfield form-control" id="searchbox" name="q" type="text" placeholder="Search">
+					</div>
+					<button class="searchbutton btn btn-primary" type="submit">Search</button>
+				</form>
+				{% for user in object_list %}
+				{{user.from_user.username}}
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</section>
 {% endblock %} 
