@@ -12,7 +12,6 @@ from django.conf import settings
 
 from model_utils.managers import InheritanceManager
 
-
 class CategoryManager(models.Manager):
 
     def new_category(self, category):
@@ -40,6 +39,8 @@ class Category(models.Model):
 
 @python_2_unicode_compatible
 class Quiz(models.Model):
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("User"), null=True, blank=True)
 
     title = models.CharField(verbose_name=_("Title"), max_length=60, blank=False)
 

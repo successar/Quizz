@@ -1,0 +1,14 @@
+{% extends 'indexTheme.html' %}
+{% block content %} 
+{% load friendshiptags %}
+<h1>Your Friends</h1> 
+<form id="searchform" action="{% url 'friendship_view_friends' %}" method="get" accept-charset="utf-8">
+	<button class="searchbutton" type="submit">
+		<i class="fa fa-search"></i>
+	</button>
+	<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
+</form>
+{% for user in object_list %}
+{{user.from_user.username}}
+{% endfor %}
+{% endblock %} 

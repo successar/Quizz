@@ -12,6 +12,7 @@ from .forms import QuestionForm, AnswerFormSet
 from .models import Quiz, Category, Progress, Sitting, Question
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
+from friendship.models import Friend
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -43,7 +44,8 @@ class ViewQuizListByCategory(ListView):
 
     def get_queryset(self):
         queryset = super(ViewQuizListByCategory, self).get_queryset()
-        return queryset.filter(category=self.category)
+        friends = Friend.objects.friends(self.request.user)
+        return queryset.filter(category=self.category, user__in=friends) 
 
 
 class QuizUserProgressView(TemplateView):
@@ -192,15 +194,20 @@ class QuizCreate(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('question_create')
 
     def form_valid(self, form):
-        self.object = form.save()
-        self.request.session['quiz'] = self.object.id
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        self.request.session['quizid'] = self.object.id
+        self.request.session['quizname'] = self.object.title
+        self.request.session['quizcategoryid'] = self.object.category.id
+        self.request.session['quizcategory'] = self.object.category.category
         return HttpResponseRedirect(self.get_success_url())
 
 
 class QuestionCreate(LoginRequiredMixin, CreateView):
     model = Question
     template_name = 'QuestionCreate.html'
-    fields = ['category', 'figure', 'content', 'explanation']
+    fields = ['figure', 'content', 'explanation']
     success_url = reverse_lazy('question_create')
 
     def get(self, request, *args, **kwargs):

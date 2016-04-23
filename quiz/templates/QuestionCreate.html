@@ -21,17 +21,14 @@
         <div class="row">
             <div class="col-sm-6">
                 <h1>Create a New Quiz</h1>
-                <p>Create a New QUiz</p>
+                <p>Create a New Quiz: {{ request.session.quizname }}</p>
+                <p>Quiz Category: {{ request.session.quizcategory }}</p>
             </div>
         </div>
     </div>
 </section><!--/#title-->
 <section id="about-us" class="container">
 <form action="" method="post">{% csrf_token %}
-    <div class="form-group">
-        {{ form.category.label_tag}}
-        {{ form.category|addcss:"form-control" }}
-    </div>
     <div class="form-group">
         {{ form.figure.label_tag}}
         {{ form.figure }}
