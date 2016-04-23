@@ -36,4 +36,8 @@ urlpatterns = [        url(regex=r'^index$',
                        url(regex=r'^(?P<quiz_name>[\w-]+)/take/$',
                            view=QuizTake.as_view(),
                            name='quiz_question'),
+
+                       url(regex=r'^question/new/$',
+                           view = QuestionCreate.as_view(),
+                           name='question_create'),
 ]

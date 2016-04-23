@@ -1,0 +1,42 @@
+{% extends 'indexTheme.html' %}
+{% block content %}
+
+<section id="title" class="emerald">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Users</h1>
+                <p>Pellentesque habitant morbi tristique senectus et netus et malesuada</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<form id="searchform" action="{% url 'friendship_view_users' %}" method="get" accept-charset="utf-8">
+	<button class="searchbutton" type="submit">
+		<i class="fa fa-search"></i>
+	</button>
+	<input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
+</form>
+
+<section id="quizlist">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="center gap">
+                    <ul>
+					{% for list_user in object_list %}
+					    <li>
+					        {% if user %}
+					            {{ list_user.username }} | <a href="{% url 'friendship_add_friend' list_user.username %}">add as friend</a>
+					        {% endif %}
+					    </li>
+					{% endfor %}
+					</ul>
+                </div>                
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
