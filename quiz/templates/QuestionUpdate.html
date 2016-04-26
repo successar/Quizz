@@ -1,0 +1,71 @@
+{% extends "indexTheme.html" %}
+{% load i18n %}
+{% load quiz_tags %}
+{% block title %} {% trans "Question" %} {% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+    $(function() {
+        $('.answer_form_class').formset({
+            addText: 'Add Answer',
+            deleteText: 'Remove',
+            prefix: '{{ answer_form.prefix }}',
+            addCssClass: 'btn btn-success',
+            deleteCssClass: 'btn btn-danger'
+        })
+    })()
+</script>
+
+<section id="title" class="emerald">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Create a New Quiz</h1>
+                <p>Create a New Quiz: {{ request.session.quizname }}</p>
+                <p>Quiz Category: {{ request.session.quizcategory }}</p>
+            </div>
+        </div>
+    </div>
+</section><!--/#title-->
+<section id="about-us" class="container">
+<form action="" method="post">{% csrf_token %}
+    <div class="form-group">
+        {{ form.figure.label_tag}}
+        {{ form.figure }}
+    </div>
+        <div class="form-group">
+        {{ form.content.label_tag}}
+        {{ form.content|addcss:"form-control" }}
+    </div>
+        <div class="form-group">
+        {{ form.explanation.label_tag}}
+        {{ form.explanation|addcss:"form-control" }}
+    </div>
+    <fieldset>
+        <legend>Answer List</legend>
+        <table id="id_answer_set_table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Content</th>
+                        <th scope="col">Correct</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in answer_form %}
+                    <tr class="answer_form_class">
+                        <td class="hidden">{{ form.id }}</td>
+                        <td>{{ form.content|addcss:"form-control" }}</td>
+                        <td><div class="checkbox">{{ form.correct }}</div></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {{ answer_form.management_form }}
+        {{ answer_form.non_form_errors }}
+    </fieldset>
+    <input type="submit" value="Add Question" class="btn btn-primary" />
+</form>
+</section><!--/#about-us-->
+
+{% endblock %}

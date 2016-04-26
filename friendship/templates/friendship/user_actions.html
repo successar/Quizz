@@ -22,17 +22,28 @@
                     </div>
                     <button class="searchbutton btn btn-primary" type="submit">Search</button>
                 </form>
-                <div class="center gap">
-                    <ul>
-                     {% for list_user in object_list %}
-                     <li>
-                         {% if user %}
-                         {{ list_user.username }} | <a href="{% url 'friendship_add_friend' list_user.username %}">add as friend</a>
-                         {% endif %}
-                     </li>
-                     {% endfor %}
-                 </ul>
-             </div>                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-group row">
+                 {% for list_user in object_list %}
+                 <li class="list-group-item col-md-6">
+                    <div class="row">
+                     {% if user %}
+                     <div class="col-md-6">
+                     {{ list_user.username }}
+                     </div>
+                     <div class="col-md-4"> 
+                     <a href="{% url 'friendship_add_friend' list_user.username %}">
+                         <button class="btn btn-primary">add as friend</button>
+                     </a>
+                     </div>
+                     {% endif %}
+                 <div>
+                 </li>
+                 {% endfor %}
+             </ul>             
          </div>
      </div>
  </div>

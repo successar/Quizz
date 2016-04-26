@@ -5,7 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView, FormView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import QuestionForm, AnswerFormSet
@@ -13,6 +13,7 @@ from .models import Quiz, Category, Progress, Sitting, Question
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
 from friendship.models import Friend
+from django.db.models import Q
 
 class QuizMarkerMixin(object):
     @method_decorator(login_required)
@@ -44,8 +45,8 @@ class ViewQuizListByCategory(ListView):
 
     def get_queryset(self):
         queryset = super(ViewQuizListByCategory, self).get_queryset()
-        friends = Friend.objects.friends(self.request.user)
-        return queryset.filter(category=self.category, user__in=friends) 
+        friends = Friend.objects.friends(self.request.user).values_list('from_user', flat=True)
+        return queryset.filter(Q(category=self.category), Q(user__in=friends)|Q(user=self.request.user), Q(is_active=True))
 
 
 class QuizUserProgressView(TemplateView):
@@ -245,15 +246,16 @@ class QuestionCreate(LoginRequiredMixin, CreateView):
         success page.
         """
         self.object = form.save(commit=False)
-        if 'quiz' in self.request.session :
-            self.object.quiz_id = int(self.request.session['quiz'])
+        if 'quizid' in self.request.session :
+            print int(self.request.session['quizid'])
+            self.object.quiz = Quiz.objects.get(id=int(self.request.session['quizid']))
         print(self.object)
         self.object.save()
         answer_form.instance = self.object
         answer_form.save()
         return HttpResponseRedirect(self.get_success_url())
 
-    def form_invalid(self, form, ingredient_form, instruction_form):
+    def form_invalid(self, form, answer_form):
         """
         Called if a form is invalid. Re-renders the context data with the
         data-filled forms and errors.
@@ -261,3 +263,93 @@ class QuestionCreate(LoginRequiredMixin, CreateView):
         return self.render_to_response(
             self.get_context_data(form=form,
                                   answer_form=answer_form))
+
+
+class QuestionUpdate(LoginRequiredMixin, UpdateView):
+    model = Question
+    template_name = 'QuestionUpdate.html'
+    fields = ['figure', 'content', 'explanation']
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests and instantiates blank versions of the form
+        and its inline formsets.
+        """
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        answer_form = AnswerFormSet(instance=self.object)
+        return self.render_to_response(self.get_context_data(form=form,answer_form=answer_form))
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance and its inline
+        formsets with the passed POST variables and then checking them for
+        validity.
+        """
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        answer_form = AnswerFormSet(self.request.POST, instance=self.object)
+        if (form.is_valid() and answer_form.is_valid()):
+            return self.form_valid(form, answer_form)
+        else:
+            return self.form_invalid(form, answer_form)
+
+    def form_valid(self, form, answer_form):
+        """
+        Called if all forms are valid. Creates a Question instance along with
+        associated Answers and then redirects to a
+        success page.
+        """
+        self.object = form.save()
+        answer_form.instance = self.object
+        answer_form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form, answer_form):
+        """
+        Called if a form is invalid. Re-renders the context data with the
+        data-filled forms and errors.
+        """
+        return self.render_to_response(self.get_context_data(form=form,answer_form=answer_form))
+
+    def get_success_url(self) :
+        return reverse_lazy('question_list', kwargs={'quiz_url' : self.kwargs['quiz_url']})
+
+
+class QuestionList(LoginRequiredMixin, ListView):
+    template_name = 'QuestionList.html'
+    model = Question
+
+    def dispatch(self, request, *args, **kwargs):
+        self.quiz = get_object_or_404(Quiz, url=self.kwargs['quiz_url'])
+        print self.quiz
+        return super(QuestionList, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(QuestionList, self).get_context_data(**kwargs)
+        context['quiz'] = self.quiz
+        return context
+
+    def get_queryset(self):
+        queryset = super(QuestionList, self).get_queryset()
+        return queryset.filter(quiz=self.quiz) 
+
+
+class QuizUpdate(LoginRequiredMixin, UpdateView):
+    model = Quiz
+    template_name = 'QuizCreate.html'
+    fields = ['title', 'description', 'category', 'pass_mark']
+
+    def get_object(self):
+        return Quiz.objects.get(url=self.kwargs['quiz_url'])
+
+    def get_success_url(self) :
+        return reverse_lazy('question_list', kwargs={'quiz_url' : self.kwargs['quiz_url']})
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        self.request.session['quizid'] = self.object.id
+        return HttpResponseRedirect(self.get_success_url())

@@ -37,6 +37,9 @@
                   See Description
                 </a>            
                 <a href="{% url 'quiz_question' quiz_name=quiz.url %}" class="btn btn-info col-md-2">Start Quiz</a>
+                {% if quiz.user == request.user %}
+                <a href="{% url 'quiz_update' quiz_url=quiz.url %}" class="btn btn-danger col-md-2">Edit Quiz</a>
+                {% endif %}
               </div>
             </h4>
           </div>

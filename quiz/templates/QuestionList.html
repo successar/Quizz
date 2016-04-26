@@ -1,0 +1,47 @@
+{% extends "indexTheme.html" %}
+{% load i18n %}
+{% load quiz_tags %}
+{% block title %} {% trans "Question List" %} {% endblock %}
+
+{% block content %}
+
+<section id="title" class="emerald">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Question List for {{ quiz.title }}</h1>
+                <p>Pellentesque habitant morbi tristique senectus et netus et malesuada</p>
+            </div>
+            <div class="col-sm-6">
+                <ul class="breadcrumb pull-right">
+                    <li><a href="index.html">Home</a></li>
+                    <li class="active">QuizList</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section><!--/#title-->     
+
+<section id="quizlist">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="center gap">
+                    <h2>Questions</h2>
+                </div>                
+            </div>
+        </div>
+        {% for ques in question_list %}  
+        <div class="row">          
+            <div class="col-md-4 col-sm-6">
+                <a href="{% url 'question_update' quiz_url=quiz.url pk=ques.id %}"><button class="btn btn-primary">Update</button></a>
+            </div>
+            <div class="col-md-6">
+                <p>{{ ques.content }}</p>
+            </div><!--/.col-md-4-->
+        </div><!--/.row-->
+        {% endfor %}          
+    </div>
+</section><!--/#services-->
+
+    {% endblock %}

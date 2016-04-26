@@ -58,6 +58,11 @@ class Quiz(models.Model):
 
     fail_text = models.TextField(verbose_name=_("Fail Text"), default='You have failed', blank=True, help_text=_("Displayed if user fails."))
 
+    is_active = models.BooleanField(blank=False,
+                                  default=True,
+                                  help_text=_("Is this active?"),
+                                  verbose_name=_("Is Active"))
+
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         if self.url == '' :
             self.url = self.title
@@ -361,17 +366,8 @@ class Question(models.Model):
 @python_2_unicode_compatible
 class Answer(models.Model):
     question = models.ForeignKey(Question, verbose_name=_("Question"))
-
-    content = models.CharField(max_length=1000,
-                               blank=False,
-                               help_text=_("Enter the answer text that "
-                                           "you want displayed"),
-                               verbose_name=_("Content"))
-
-    correct = models.BooleanField(blank=False,
-                                  default=False,
-                                  help_text=_("Is this a correct answer?"),
-                                  verbose_name=_("Correct"))
+    content = models.CharField(max_length=1000,blank=False, help_text=_("Enter the answer text that you want displayed"),verbose_name=_("Content"))
+    correct = models.BooleanField(blank=False, default=False, help_text=_("Is this a correct answer?"), verbose_name=_("Correct"))
 
     def __str__(self):
         return self.content

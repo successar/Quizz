@@ -22,11 +22,18 @@
 					</div>
 					<button class="searchbutton btn btn-primary" type="submit">Search</button>
 				</form>
-				{% for user in object_list %}
-				{{user.from_user.username}}
-				{% endfor %}
 			</div>
 		</div>
+
+
+		{% for user in object_list %}
+		<div class="row">
+			<div class="col-md-12">
+				{{user.from_user.username}}
+			</div>
+		</div>
+		{% endfor %}
 	</div>
+
 </section>
 {% endblock %} 

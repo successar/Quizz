@@ -24,7 +24,6 @@ class view_friends(ListView):
     def get_queryset(self):
         user = self.request.user
         result = Friend.objects.friends(user)
-        print result
         query = self.request.GET.get('q')
         
         if query:
@@ -47,7 +46,7 @@ def friendship_add_friend(request, to_username, template_name='friendship/friend
         except AlreadyExistsError as e:
             ctx['errors'] = ["%s" % e]
         else:
-            return redirect('friendship_request_list')
+            return redirect('friendship_view_users')
 
     return render(request, template_name, ctx)
 
@@ -60,7 +59,7 @@ def friendship_accept(request, friendship_request_id):
             request.user.friendship_requests_received,
             id=friendship_request_id)
         f_request.accept()
-        return redirect('friendship_view_friends', username=request.user.username)
+        return redirect('friendship_view_friends')
 
     return redirect('friendship_requests_detail', friendship_request_id=friendship_request_id)
 
