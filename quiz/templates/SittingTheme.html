@@ -20,6 +20,9 @@
     <p>{% trans "User" %}: {{ sitting.user }}</p>
 <p>{% trans "Completed" %}: {{ sitting.end|date }}</p>
 <p>{% trans "Score" %}: {{ sitting.get_percent_correct }}%</p>
+{% if not sitting.quiz.is_active %}
+<p>This quiz is Archived !!!!!</p>
+{% endif %}
 
 <table class="table table-bordered table-striped">
 

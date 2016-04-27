@@ -65,22 +65,52 @@
         </div>
     </header><!--/header-->
     
-    {% block content %} {% endblock %}
+    {% block content %} 
+
+    <section id="title" class="emerald">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Today's quizzes</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="about-us" class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Quiz Title</th>
+                <th scope="col">Create On</th>
+                <th scope="col">Created By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for quiz in quiz_list %}
+
+            <tr>
+                <td>
+                    <a href="{% url 'quiz_category_list_matching' category_name=quiz.category.category %}">{{ quiz.title }}</a>
+                </td>
+                <td class="col-md-4">
+                    {{ quiz.createdOn }}
+                </td>
+                <td class="col-md-4">
+                    {{ quiz.user.username }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</section>
+    {% endblock %}
     
     <footer id="footer" class="midnight-blue">
         <div class="container">
             <div class="row">
                 <div class="col-sm-6">
                     &copy; 2016 Quizz</a>. All Rights Reserved.
-                </div>
-                <div class="col-sm-6">
-                    <ul class="pull-right">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Faq</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a id="gototop" class="gototop" href="#"><i class="icon-chevron-up"></i></a></li><!--#gototop-->
-                    </ul>
                 </div>
             </div>
         </div>

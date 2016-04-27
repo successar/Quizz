@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = 'quiz_progress'
+LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login_url'
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

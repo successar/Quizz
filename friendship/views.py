@@ -115,13 +115,13 @@ def friendship_requests_detail(request, friendship_request_id, template_name='fr
 
     return render(request, template_name, {'friendship_request': f_request})
 
+
 class all_users(ListView):
     model = user_model
     template_name = 'friendship/user_actions.html'
 
     def get_queryset(self):
-        result = super(all_users, self).get_queryset()
-
+        result = super(all_users, self).get_queryset().exclude(id=self.request.user.id)
         query = self.request.GET.get('q')
         if query:
             query = query.strip()
@@ -132,3 +132,10 @@ class all_users(ListView):
             result = result.none()
 
         return result
+
+    def get_context_data(self, **kwargs):
+        context = super(all_users, self).get_context_data(**kwargs)
+        friends = Friend.objects.friends(self.request.user).values_list('from_user', flat=True)
+        context['friends'] = friends
+        return context
+

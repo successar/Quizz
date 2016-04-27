@@ -58,10 +58,9 @@ class Quiz(models.Model):
 
     fail_text = models.TextField(verbose_name=_("Fail Text"), default='You have failed', blank=True, help_text=_("Displayed if user fails."))
 
-    is_active = models.BooleanField(blank=False,
-                                  default=True,
-                                  help_text=_("Is this active?"),
-                                  verbose_name=_("Is Active"))
+    is_active = models.BooleanField(blank=False, default=True, help_text=_("Is this active?"), verbose_name=_("Is Active"))
+
+    createdOn = models.DateTimeField(auto_now=True)
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         if self.url == '' :
@@ -119,7 +118,7 @@ class Progress(models.Model):
         Finds the previous quizzes marked as 'exam papers'.
         Returns a queryset of complete exams.
         """
-        return Sitting.objects.filter(user=self.user, complete=True)
+        return Sitting.objects.filter(user=self.user, complete=True).order_by("-end")
 
 
 class SittingManager(models.Manager):
