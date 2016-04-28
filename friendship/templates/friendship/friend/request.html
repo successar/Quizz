@@ -1,14 +1,30 @@
 {% extends 'indexTheme.html' %}
 {% block content %}
-<div>{{ friendship_request.from_user }} wants to be friends with {{ friendship_request.to_user }}</div>
 
-<form method="post" action="{% url 'friendship_accept' friendship_request.pk %}">
-{% csrf_token %}
-<input type="submit" value="accept" />
-</form>
 
-<form method="post" action="{% url 'friendship_reject' friendship_request.pk %}">
-{% csrf_token %}
-<input type="submit" value="reject" />
-</form>
+<section id="title" class="emerald">
+	<center>
+	    <div class="container">
+	        <div class="row">
+	                <h1>{{ friendship_request.from_user }} wants to be friends with {{ friendship_request.to_user }}</h1>
+	        </div>
+	    </div>
+	</center>
+</section>
+
+<center>
+	<div class="btn">
+		<form method="post" action="{% url 'friendship_accept' friendship_request.pk %}">
+		{% csrf_token %}
+		<input type="submit" value="accept" class="btn btn-primary"/>
+		</form>
+	</div>
+
+	<div class="btn">
+		<form method="post" action="{% url 'friendship_reject' friendship_request.pk %}">
+		{% csrf_token %}
+		<input type="submit" value="reject" class="btn btn-primary"/>
+		</form>
+	</div>
+</center>
 {% endblock %}
