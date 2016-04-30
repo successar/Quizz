@@ -34,13 +34,15 @@
                      <div class="col-md-6">
                      {{ list_user.username }}
                      </div>
-                     {% if list_user not in friends %}
                      <div class="col-md-4"> 
+                     {% if list_user.id not in friends %}
                      <a href="{% url 'friendship_add_friend' list_user.username %}">
                          <button class="btn btn-primary">add as friend</button>
                      </a>
-                     </div>
+                     {% else %}
+                     <p class="btn btn-primary">Already Friends</p>
                      {% endif %}
+                     </div>
                      {% endif %}
                  <div>
                  </li>

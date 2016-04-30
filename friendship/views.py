@@ -9,9 +9,9 @@ except ImportError:
 
 from django.shortcuts import render, get_object_or_404, redirect
 
-from friendship.exceptions import AlreadyExistsError
+from friendship.exceptions import AlreadyExistsError, AlreadyFriendsError
 from friendship.models import Friend, FriendshipRequest
-from django.views.generic import ListView
+from django.views.generic import ListView, DeleteView
 
 get_friendship_context_object_name = lambda: getattr(settings, 'FRIENDSHIP_CONTEXT_OBJECT_NAME', 'user')
 get_friendship_context_object_list_name = lambda: getattr(settings, 'FRIENDSHIP_CONTEXT_OBJECT_LIST_NAME', 'users')
@@ -43,6 +43,10 @@ def friendship_add_friend(request, to_username, template_name='friendship/friend
         from_user = request.user
         try:
             Friend.objects.add_friend(from_user, to_user)
+        except ValidationError as e:
+            ctx['errors'] = ["%s" % e]
+        except AlreadyFriendsError as e:
+            ctx['errors'] = ["%s" % e]
         except AlreadyExistsError as e:
             ctx['errors'] = ["%s" % e]
         else:
@@ -139,3 +143,9 @@ class all_users(ListView):
         context['friends'] = friends
         return context
 
+
+def remove_friend(request, to_username):
+    to_user = user_model.objects.get(username=to_username)
+    from_user = request.user
+    Friend.objects.remove_friend(from_user, to_user)
+    return redirect('friendship_view_friends')

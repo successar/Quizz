@@ -343,9 +343,7 @@ class QuizUpdate(LoginRequiredMixin, UpdateView):
     fields = ['title', 'description', 'category', 'pass_mark']
 
     def duplicate(self, quiz, new_quiz):
-        print "in"
         for question in quiz.question_set.all() :
-            print "A"
             question_copy = deepcopy(question)
             question_copy.id = None
             question_copy.quiz = new_quiz
@@ -376,7 +374,6 @@ class QuizUpdate(LoginRequiredMixin, UpdateView):
         self.object.id = None
         self.object.is_active = True
         self.object.save()
-        print self.quiz, self.object
         self.duplicate(self.quiz, self.object)
         self.request.session['quizid'] = self.object.id
         return HttpResponseRedirect(self.get_success_url())
@@ -389,5 +386,4 @@ class QuizList(ListView, LoginRequiredMixin) :
     def get_queryset(self):
         queryset = super(QuizList, self).get_queryset()
         friends = Friend.objects.friends(self.request.user).values_list('from_user', flat=True)
-        last = datetime.timedelta(days=1)
-        return queryset.filter(Q(user__in=friends)|Q(user=self.request.user), Q(is_active=True), Q(createdOn__gte=datetime.date.today() - last)).order_by("-createdOn")
+        return queryset.filter(Q(user__in=friends)|Q(user=self.request.user), Q(is_active=True)).order_by("-createdOn")

@@ -4,7 +4,7 @@ except ImportError:
     from django.conf.urls.defaults import url, patterns
 from friendship.views import view_friends, friendship_add_friend, friendship_accept, \
     friendship_reject, friendship_cancel, friendship_request_list, \
-    friendship_request_list_rejected, friendship_requests_detail, all_users
+    friendship_request_list_rejected, friendship_requests_detail, all_users, remove_friend
 
 urlpatterns = patterns('',
     url(
@@ -51,5 +51,10 @@ urlpatterns = patterns('',
         regex=r'^friend/request/(?P<friendship_request_id>\d+)/$',
         view=friendship_requests_detail,
         name='friendship_requests_detail',
+    ),
+    url(
+        regex=r'^friend/remove/(?P<to_username>[\w-]+)/$',
+        view=remove_friend,
+        name='friendship_remove_friend',
     ),
 )
