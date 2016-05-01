@@ -21,10 +21,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('content', 'category', )
-    list_filter = ('category',)
-    fields = ('content', 'category',
-              'figure', 'quiz', 'explanation', )
+    list_display = ('content', )
+    fields = ('content', 'figure', 'quiz', 'explanation', )
 
     search_fields = ('content', 'explanation')
 

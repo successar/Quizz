@@ -2,11 +2,15 @@ import random
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, render_to_response
+from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView, FormView
 from django.views.generic.edit import CreateView, UpdateView, BaseUpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 from .forms import QuestionForm, AnswerFormSet
 from .models import Quiz, Category, Progress, Sitting, Question
@@ -201,8 +205,9 @@ class QuizCreate(LoginRequiredMixin, CreateView):
         self.object.save()
         self.request.session['quizid'] = self.object.id
         self.request.session['quizname'] = self.object.title
-        self.request.session['quizcategoryid'] = self.object.category.id
-        self.request.session['quizcategory'] = self.object.category.category
+        if self.object.category :
+            self.request.session['quizcategoryid'] = self.object.category.id
+            self.request.session['quizcategory'] = self.object.category.category
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -387,3 +392,34 @@ class QuizList(ListView, LoginRequiredMixin) :
         queryset = super(QuizList, self).get_queryset()
         friends = Friend.objects.friends(self.request.user).values_list('from_user', flat=True)
         return queryset.filter(Q(user__in=friends)|Q(user=self.request.user), Q(is_active=True)).order_by("-createdOn")
+
+from el_pagination.decorators import page_template 
+
+@page_template('indexPage.html')
+def quizlist(request, template='indexTheme.html',extra_context=None):
+    queryset = Quiz.objects.all()
+    friends = Friend.objects.friends(request.user).values_list('from_user', flat=True)
+    queryset = queryset.filter(Q(user__in=friends)|Q(user=request.user), Q(is_active=True)).order_by("-createdOn")
+    context = {
+        'entries': queryset,
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+    return render_to_response(
+        template, context, context_instance=RequestContext(request))
+
+
+class UserCreateForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "password1", "password2")
+
+    def save(self, commit=True):
+        user = super(UserCreateForm, self).save(commit=False)
+        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
+        return user
+        

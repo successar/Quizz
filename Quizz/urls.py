@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 
 from django.views.generic.edit import CreateView
-from django.contrib.auth.forms import UserCreationForm
+from quiz.views import UserCreateForm
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^register/', CreateView.as_view(
             template_name='registration/register.html',
-            form_class=UserCreationForm,
+            form_class=UserCreateForm,
             success_url='/'
     ), name='register'),
     url(r'^friends/', include('friendship.urls'))

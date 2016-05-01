@@ -328,8 +328,6 @@ class Question(models.Model):
 
     quiz = models.ForeignKey(Quiz, verbose_name=_("Quiz"), blank=True, null=True)
 
-    category = models.ForeignKey(Category, verbose_name=_("Category"), blank=True, null=True)
-
     figure = models.ImageField(upload_to='uploads/%Y/%m/%d', blank=True, null=True, verbose_name=_("Figure"))
 
     content = models.CharField(max_length=1000, blank=False, help_text=_("Enter the question text that you want displayed"), verbose_name=_('Question'))
@@ -357,7 +355,6 @@ class Question(models.Model):
     class Meta:
         verbose_name = _("Multiple Choice Question")
         verbose_name_plural = _("Multiple Choice Questions")
-        ordering = ['category']     
 
     def __str__(self):
         return self.content

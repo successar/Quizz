@@ -2,10 +2,10 @@ from django.conf.urls import url
 from django.views.generic import TemplateView
 from .views import CategoriesListView,\
     ViewQuizListByCategory, QuizUserProgressView,\
-    QuizMarkingDetail, QuizTake, QuizCreate, QuestionCreate, QuizUpdate, QuestionList, QuestionUpdate, QuizList
+    QuizMarkingDetail, QuizTake, QuizCreate, QuestionCreate, QuizUpdate, QuestionList, QuestionUpdate, QuizList, quizlist
 
 urlpatterns = [        url(regex=r'^index$', 
-                           view=QuizList.as_view(),
+                           view=quizlist,
                            name='index'),
 
                        url(regex=r'^category/$',

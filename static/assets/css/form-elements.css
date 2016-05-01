@@ -68,6 +68,6 @@ button.btn:hover { color: #fff; }
 
 button.btn:active { outline: 0; color: #fff; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
 
-button.btn:focus { outline: 0; background: #de615e; color: #fff; }
+button.btn:focus { outline: 0; color: #fff; }
 
-button.btn:active:focus, button.btn.active:focus { outline: 0; background: #de615e; color: #fff; }
+button.btn:active:focus, button.btn.active:focus { outline: 0; color: #fff; }

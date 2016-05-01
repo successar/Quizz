@@ -82,15 +82,16 @@
                                     <button type="submit" class="btn btn-primary">Sign in!</button>                                    
                                     <input type="hidden" name="next" value="{{ next }}" />
                                 </form>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <a href="{% url 'password_reset' %}"><button class="btn btn-success">Lost password?</button></a>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <a href="{% url 'register' %}"><button class="btn btn-danger">Sign Up</button></a>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a href="{% url 'password_reset' %}"><button class="btn btn-success btn-block">Lost password?</button></a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a href="{% url 'register' %}"><button class="btn btn-danger btn-block">Sign Up</button></a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            
                         </div>
                     </div>
                     <div class="row">
