@@ -71,13 +71,15 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-6">
-                    <h1>Today's quizzes</h1>
+                    <h1>Recent quizzes</h1>
                 </div>
             </div>
         </div>
     </section>
-    <section id="about-us" class="container table">
-        {% include page_template %}
+    <section id="about-us" class="container">
+        <div class="row">
+            {% include page_template %}
+        </div>
     </section>
     {% endblock %}
     
@@ -90,8 +92,8 @@
             </div>
         </div>
     </footer><!--/#footer-->
-<script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
-<script type="text/javascript">$.endlessPaginate({paginateOnScroll: true});</script>
+    <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
+    <script type="text/javascript">$.endlessPaginate({paginateOnScroll: true});</script>
 
 </body>
 </html>

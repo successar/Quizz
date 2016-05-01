@@ -42,6 +42,24 @@ h6 {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
 }
+.feed {
+  display: inline-block;
+  font-family: "Helvetica Neue", Roboto, "Segoe UI", Calibri, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 16px;
+  border-color: #eee #ddd #bbb;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  max-width: 468px;
+}
+.feed p {
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 20px;
+}
 a {
   color: #34495e;
   -webkit-transition: 300ms;
