@@ -15,9 +15,16 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<ul>
-					{% for friendship_request in requests %}
-					<li>{{ friendship_request.from_user }} to {{ friendship_request.to_user }} <a href="{% url 'friendship_requests_detail' friendship_request.id %}">view</a></li>
+				{% for friendship_request in requests %}
+				<ul class="list-group row">
+					<li class="list-group-item col-md-6">
+						<center>
+							{{ friendship_request.from_user }} to {{ friendship_request.to_user }}
+							<a href="{% url 'friendship_requests_detail' friendship_request.id %}">
+								<button class="btn btn-primary">View</button>
+							</a>
+						</center>
+					</li>
 					{% empty %}
 				</ul>
 				<div>no requests :(</div>
@@ -26,4 +33,5 @@
 		</div>
 	</div>
 </section>
+
 {% endblock %}
