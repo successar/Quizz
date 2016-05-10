@@ -8,6 +8,7 @@ except ImportError:
     user_model = User
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.exceptions import ValidationError
 
 from friendship.exceptions import AlreadyExistsError, AlreadyFriendsError
 from friendship.models import Friend, FriendshipRequest
@@ -59,9 +60,7 @@ def friendship_add_friend(request, to_username, template_name='friendship/friend
 def friendship_accept(request, friendship_request_id):
     """ Accept a friendship request """
     if request.method == 'POST':
-        f_request = get_object_or_404(
-            request.user.friendship_requests_received,
-            id=friendship_request_id)
+        f_request = get_object_or_404(request.user.friendship_requests_received, id=friendship_request_id)
         f_request.accept()
         return redirect('friendship_view_friends')
 

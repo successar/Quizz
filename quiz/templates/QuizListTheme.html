@@ -57,7 +57,9 @@
       </div><!--/#accordion3-->
   </div>
 {% else %}
-<p>{% trans "There are no quizzes" %}</p>
+<section id="error" class="container">
+        <h1>There are no quizzes in this category</h1>
+</section>
 {% endif %}
 {% endwith %}
 <!-- /Career -->
