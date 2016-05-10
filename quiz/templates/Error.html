@@ -1,0 +1,12 @@
+{% extends "indexTheme.html" %}
+{% load i18n %}
+{% load quiz_tags %}
+{% block title %} {% trans "Error" %} {% endblock %}
+
+{% block content %}
+
+<section id="error" class="container concrete">
+        <h1>Oops, Something appear to be Wrong</h1>
+        <h3>{{ error }}</h3>
+</section>
+{% endblock %}

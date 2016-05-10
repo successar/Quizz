@@ -1,12 +1,13 @@
 import random
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render, render_to_response
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView, FormView
-from django.views.generic.edit import CreateView, UpdateView, BaseUpdateView
+from django.views.generic.edit import CreateView, UpdateView, BaseUpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
 from django.contrib.auth.models import User
@@ -17,7 +18,7 @@ from .models import Quiz, Category, Progress, Sitting, Question
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
 from friendship.models import Friend
-from django.db.models import Q
+from django.db.models import Q, Count
 import datetime
 from datetime import timedelta
 from copy import deepcopy
@@ -76,15 +77,6 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         sitting = self.get_object()
-
-        q_to_toggle = request.POST.get('qid', None)
-        if q_to_toggle:
-            q = Question.objects.get(id=int(q_to_toggle))
-            if int(q_to_toggle) in sitting.get_incorrect_questions:
-                sitting.remove_incorrect_question(q)
-            else:
-                sitting.add_incorrect_question(q)
-
         return self.get(request)
 
     def get_context_data(self, **kwargs):
@@ -100,13 +92,15 @@ class QuizTake(FormView):
     ### Get the request In , Dispatch to appropriate handler ####
     def dispatch(self, request, *args, **kwargs):
         print("dispatch")
-        self.quiz = get_object_or_404(Quiz, url=self.kwargs['quiz_name'], is_active=True)
+        self.quiz = get_object_or_404(Quiz, id=self.kwargs['quiz_name'], is_active=True)
 
         self.logged_in_user = self.request.user.is_authenticated()
 
         if self.logged_in_user:
-            self.sitting = Sitting.objects.user_sitting(request.user,
-                                                        self.quiz)
+            try :
+                self.sitting = Sitting.objects.user_sitting(request.user, self.quiz)
+            except ImproperlyConfigured as e:
+                return render(request, "Error.html", { "error" : "%s" % e })
         else:
             raise PermissionDenied
 
@@ -215,7 +209,9 @@ class QuestionCreate(LoginRequiredMixin, CreateView):
     model = Question
     template_name = 'QuestionCreate.html'
     fields = ['figure', 'content', 'explanation']
-    success_url = reverse_lazy('question_create')
+
+    def get_success_url(self):
+        return reverse_lazy('question_list', kwargs={'quiz_url' : self.request.session['quizid']})
 
     def get(self, request, *args, **kwargs):
         """
@@ -253,7 +249,6 @@ class QuestionCreate(LoginRequiredMixin, CreateView):
         """
         self.object = form.save(commit=False)
         if 'quizid' in self.request.session :
-            print int(self.request.session['quizid'])
             self.object.quiz = Quiz.objects.get(id=int(self.request.session['quizid']))
         print(self.object)
         self.object.save()
@@ -329,7 +324,7 @@ class QuestionList(LoginRequiredMixin, ListView):
     model = Question
 
     def dispatch(self, request, *args, **kwargs):
-        self.quiz = get_object_or_404(Quiz, url=self.kwargs['quiz_url'], is_active=True)
+        self.quiz = get_object_or_404(Quiz, id=self.kwargs['quiz_url'], is_active=True)
         return super(QuestionList, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -361,10 +356,10 @@ class QuizUpdate(LoginRequiredMixin, UpdateView):
                 choice_copy.save()
 
     def get_object(self):
-        return Quiz.objects.get(url=self.kwargs['quiz_url'], is_active=True)
+        return Quiz.objects.get(id=self.kwargs['quiz_url'], is_active=True)
 
     def get_success_url(self) :
-        return reverse_lazy('question_list', kwargs={'quiz_url' : self.kwargs['quiz_url']})
+        return reverse_lazy('question_list', kwargs={'quiz_url' : self.request.session['quizid']})
 
     def post(self,request, *args, **kwargs) :
         self.object = self.get_object()
@@ -381,6 +376,10 @@ class QuizUpdate(LoginRequiredMixin, UpdateView):
         self.object.save()
         self.duplicate(self.quiz, self.object)
         self.request.session['quizid'] = self.object.id
+        self.request.session['quizname'] = self.object.title
+        if self.object.category :
+            self.request.session['quizcategoryid'] = self.object.category.id
+            self.request.session['quizcategory'] = self.object.category.category
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -423,3 +422,14 @@ class UserCreateForm(UserCreationForm):
             user.save()
         return user
         
+
+
+class QuestionDelete(DeleteView, LoginRequiredMixin):
+    model = Question
+
+    def get_success_url(self) :
+        return reverse_lazy('question_list', kwargs={'quiz_url' : self.kwargs['quiz_url']})
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+

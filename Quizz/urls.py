@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.conf import settings
 
 from django.views.generic.edit import CreateView
 from quiz.views import UserCreateForm
@@ -30,5 +31,12 @@ urlpatterns = [
             form_class=UserCreateForm,
             success_url='/'
     ), name='register'),
-    url(r'^friends/', include('friendship.urls'))
+    url(r'^friends/', include('friendship.urls')),
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.MEDIA_ROOT,
+        }),
 ]
+
+from django.conf.urls import (
+handler400, handler403, handler404, handler500
+)

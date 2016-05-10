@@ -28,7 +28,7 @@
     </div>
 </section><!--/#title-->
 <section id="about-us" class="container">
-<form action="" method="post">{% csrf_token %}
+<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
     <div class="form-group">
         {{ form.figure.label_tag}}
         {{ form.figure }}

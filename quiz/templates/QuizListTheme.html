@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<section id="title" class="emerald">
+<section id="title" class="carrot">
   <div class="container">
     <div class="row">
       <div class="col-sm-6">
@@ -36,9 +36,9 @@
                 <a class="accordion-toggle btn btn-primary col-md-2" data-toggle="collapse" data-parent="#accordion1" href="#{{ quiz.title.split|join:"_" }}">
                   See Description
                 </a>            
-                <a href="{% url 'quiz_question' quiz_name=quiz.url %}" class="btn btn-info col-md-2">Start Quiz</a>
+                <a href="{% url 'quiz_question' quiz_name=quiz.id %}" class="btn btn-info col-md-2">Start Quiz</a>
                 {% if quiz.user == request.user %}
-                <a href="{% url 'quiz_update' quiz_url=quiz.url %}" class="btn btn-danger col-md-2">Edit Quiz</a>
+                <a href="{% url 'quiz_update' quiz_url=quiz.id %}" class="btn btn-danger col-md-2">Edit Quiz</a>
                 {% endif %}
               </div>
             </h4>
@@ -48,7 +48,8 @@
               <p> {{ quiz.description }} </p>
               {% if quiz.single_attempt %}
               <p>{% trans "You will only get one attempt at this quiz" %}.</p>
-              {% endif %}           
+              {% endif %}    
+              <p> Created By - @{{ quiz.user.username }} on {{ quiz.createdOn }} </p>       
             </div>
           </div>
         </div>

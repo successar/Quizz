@@ -31,6 +31,7 @@
     <th>{% trans "Question" %}</th>
     <th>{% trans "User answer" %}</th>
     <th>Is Correct</th>
+    <th> Explanation</th>
   </tr>
   </thead>
 
@@ -38,33 +39,29 @@
 {% for question in questions %}
 
   <tr>
-      <td>
+      <td width="20%">
         {{ question.content }}
-        {% if question.figure %}
-        <div style="max-width: 100px;"><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
-        {% endif %}
       </td>
-    <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
-    <td>
+    <td width="20%">{{ question|answer_choice_to_string:question.user_answer }}</td>
+    <td width="10%">
     {% if question.id in sitting.get_incorrect_questions %}
       <p>{% trans "incorrect" %}</p>
     {% else %}
       <p>{% trans "Correct" %}</p>
     {% endif %}
     </td>
-    {% if perms.quiz.can_score %}
     <td>
-    <form action="" method="POST">{% csrf_token %}
-      <input type=hidden name="qid" value="{{ question.id }}">
-      <button type="submit" class="btn btn-warning">{% trans "Toggle whether correct" %}</button>
-    </form>
+    {{ question.explanation }}
   </td>
-    {% endif %}
     
   </tr>
+  {% if question.figure %}
   <tr>
-    <td>{{ question.explanation }}</td>
+    <td colspan=4>
+        <div><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
+    </td>
   </tr>
+  {% endif %}
 
 {% endfor %}
 

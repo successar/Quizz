@@ -136,6 +136,9 @@ STATICFILES_DIRS = [
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+ADMIN_MEDIA_PREFIX = '/media/'
 TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
 )

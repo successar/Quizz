@@ -2,7 +2,8 @@ from django.conf.urls import url
 from django.views.generic import TemplateView
 from .views import CategoriesListView,\
     ViewQuizListByCategory, QuizUserProgressView,\
-    QuizMarkingDetail, QuizTake, QuizCreate, QuestionCreate, QuizUpdate, QuestionList, QuestionUpdate, QuizList, quizlist
+    QuizMarkingDetail, QuizTake, QuizCreate, QuestionCreate, QuizUpdate, QuestionList, QuestionUpdate, QuizList, quizlist, \
+    QuestionDelete
 
 urlpatterns = [        url(regex=r'^index$', 
                            view=quizlist,
@@ -33,7 +34,7 @@ urlpatterns = [        url(regex=r'^index$',
                            name='question_create'),
 
                        #  passes variable 'quiz_name' to quiz_take view
-                       url(regex=r'^(?P<quiz_name>[\w-]+)/take/$',
+                       url(regex=r'^(?P<quiz_name>[\d.]+)/take/$',
                            view=QuizTake.as_view(),
                            name='quiz_question'),
 
@@ -41,15 +42,19 @@ urlpatterns = [        url(regex=r'^index$',
                            view = QuestionCreate.as_view(),
                            name='question_create'),
 
-                       url(regex=r'^(?P<quiz_url>[\w-]+)/edit/$',
+                       url(regex=r'^(?P<quiz_url>[\d.]+)/edit/$',
                            view = QuizUpdate.as_view(),
                            name='quiz_update'),
 
-                       url(regex=r'^(?P<quiz_url>[\w-]+)/edit/questions/$',
+                       url(regex=r'^(?P<quiz_url>[\d.]+)/edit/questions/$',
                            view = QuestionList.as_view(),
                            name='question_list'),
 
-                       url(regex=r'^(?P<quiz_url>[\w-]+)/edit/(?P<pk>[\w-]+)/$',
+                       url(regex=r'^(?P<quiz_url>[\d.]+)/edit/(?P<pk>[\w-]+)/$',
                            view = QuestionUpdate.as_view(),
                            name='question_update'),
+
+                       url(regex=r'^(?P<quiz_url>[\d.]+)/delete/(?P<pk>[\w-]+)/$',
+                           view = QuestionDelete.as_view(),
+                           name='question_delete'),
 ]

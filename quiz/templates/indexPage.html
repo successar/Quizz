@@ -3,6 +3,7 @@
 {% paginate 20 entries %}
 {% for quiz in entries %}
 <blockquote class="col-md-4 feed">      
+	<a href="{% url 'quiz_question' quiz_name=quiz.id %}"
 	<h4 class="quiz-title">{{ quiz.title }} </h4>
 	<p class="quiz-desc">{{ quiz.description|truncatechars:140 }}</p>
 	<footer class="quiz-creator"> - @{{ quiz.user.username}} {{ quiz.createdOn }} </footer>
