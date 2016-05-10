@@ -6,67 +6,54 @@
 {% block content %}
 
 <section id="title" class="emerald">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <h1>Result for {{ sitting.quiz.title }}</h1>
-                <p>{{ sitting.quiz.description }}</p>
-                <p>Category : {{ sitting.quiz.category }}</p>
-            </div>
-        </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1>Result for {{ sitting.quiz.title }}</h1>
+        <p>{{ sitting.quiz.description }}</p>
+        <p>Category : {{ sitting.quiz.category }}</p>
+      </div>
     </div>
+  </div>
 </section><!--/#title-->
 <section id="about-us" class="container">
-    <p>{% trans "User" %}: {{ sitting.user }}</p>
-<p>{% trans "Completed" %}: {{ sitting.end|date }}</p>
-<p>{% trans "Score" %}: {{ sitting.get_percent_correct }}%</p>
-{% if not sitting.quiz.is_active %}
-<p>This quiz is Archived !!!!!</p>
-{% endif %}
-
-<table class="table table-bordered table-striped">
-
-  <thead>
-  <tr>
-    <th>{% trans "Question" %}</th>
-    <th>{% trans "User answer" %}</th>
-    <th>Is Correct</th>
-    <th> Explanation</th>
-  </tr>
-  </thead>
-
-  <tbody>
-{% for question in questions %}
-
-  <tr>
-      <td width="20%">
-        {{ question.content }}
-      </td>
-    <td width="20%">{{ question|answer_choice_to_string:question.user_answer }}</td>
-    <td width="10%">
-    {% if question.id in sitting.get_incorrect_questions %}
-      <p>{% trans "incorrect" %}</p>
-    {% else %}
-      <p>{% trans "Correct" %}</p>
-    {% endif %}
-    </td>
-    <td>
-    {{ question.explanation }}
-  </td>
-    
-  </tr>
-  {% if question.figure %}
-  <tr>
-    <td colspan=4>
-        <div><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></div>
-    </td>
-  </tr>
+  <p>{% trans "User" %}: {{ sitting.user }}</p>
+  <p>{% trans "Completed" %}: {{ sitting.end|date }}</p>
+  <p>{% trans "Score" %}: {{ sitting.get_percent_correct }}%</p>
+  {% if not sitting.quiz.is_active %}
+  <p>This quiz is Archived !!!!!</p>
   {% endif %}
 
-{% endfor %}
+  <div class="row">
+    {% for question in questions %}
+    <div class="col-md-12 course-quiz-question-body">
+      <h3 class="course-quiz-question-number">Question {{ forloop.counter }}</h3>
+      <h4 dir="auto" class="course-quiz-question-text"> {{ question.content }}  </h4>
+      {% if question.figure %}
+    <p><img src="{{ question.figure.url }}" alt="{{ question.figure }}"/></p>
+    {% endif %}
+    <form class="form">
+    {% for ans in question.answer_set.all %}
+    <h4 class="course-quiz-option"> 
+      {% if ans.id|stringformat:"s" == question.user_answer %}
+      {% if question.id in sitting.get_incorrect_questions %}
+      <span class="course-quiz-answer-incorrect" title="Incorrect" alt="Incorrect"><span class="icon-remove" alt="Incorrect"><span class="accessible-text-for-reader">Incorrect</span></span></span>
+      {% else %}
+      <td><span class="course-quiz-answer-correct" title="Correct" alt="Correct"><span class="icon-ok" alt="Correct"><span class="accessible-text-for-reader">Correct</span></span></span></td>
+      {% endif %}
+      {% else %}
+      <input type="radio" disabled>
+      {% endif %}
+         {{ ans.content }}
+    </h4>
+    {% endfor %}
+  </form>
 
-  </tbody>
+    <div dir="auto" class="course-quiz-question-explanation"><h4><strong>Question Explanation</strong> <br> <p>{{ question.explanation }} </p></h4></div>
+  </div>
+  {% endfor %}
 
-</table>
+</div>
+
 </section><!--/#about-us-->
 {% endblock %}
